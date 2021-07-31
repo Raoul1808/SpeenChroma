@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -28,7 +29,7 @@ namespace MewsToolbox
 
             foreach (string line in content)
             {
-                if (line.StartsWith(";")) continue; // This is a comment, we don't want to count it
+                if (line.StartsWith(";") || string.IsNullOrWhiteSpace(line)) continue; // This is either a comment or an empty line, we don't count it.
                 else if (line.StartsWith("[") && line.EndsWith("]")) // This is a section, we want to create a new sub dictionary
                 {
                     string sectionName = line.Substring(1, line.Length - 2);
@@ -38,8 +39,9 @@ namespace MewsToolbox
                 }
                 else
                 {
-                    if (string.IsNullOrWhiteSpace(section)) continue;
-                    var substrings = line.Split('=', 2);
+                    if (string.IsNullOrWhiteSpace(section)) continue; // No empty values
+                    if (!line.Contains("=")) continue;
+                    var substrings = line.Split('=');
                     iniContent[section].Add(substrings[0], substrings[1]);
                 }
             }
@@ -59,11 +61,6 @@ namespace MewsToolbox
             }
 
             return sb.ToString();
-        }
-
-        public void MakeNewSection(string sectionName)
-        {
-
         }
 
         public void SaveFile() => SaveFile(FilePath);
