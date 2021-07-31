@@ -10,3 +10,4 @@
  - [ ] Dedicated Settings file
  - [ ] Add in-game GUI for settings
  - [ ] Charting API (2.0 release)
+ 
