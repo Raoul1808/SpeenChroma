@@ -1,5 +1,5 @@
 # Speen Chroma
- Intrudocing **Speen Chroma**, a [Spin Rhythm XD](https://store.steampowered.com/app/1058830/Spin_Rhythm_XD/) mod to further customize the wheel and notes' colours.
+ Introducing **Speen Chroma**, a [Spin Rhythm XD](https://store.steampowered.com/app/1058830/Spin_Rhythm_XD/) mod to further customize the wheel and notes' colours.
  
 # Features
  - Rainbow Wheel!
