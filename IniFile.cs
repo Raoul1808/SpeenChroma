@@ -69,5 +69,34 @@ namespace MewsToolbox
         {
             File.WriteAllText(filePath, MakeString());
         }
+
+        public T GetValueOrDefaultTo<T>(string section, string setting, T defaultValue)
+        {
+            try
+            {
+                var value = iniContent[section][setting];
+                switch (Type.GetTypeCode(typeof(T)))
+                {
+                    case TypeCode.String:
+                        return (T)(object)value;
+
+                    case TypeCode.Boolean:
+                        return (T)(object)bool.Parse(value);
+
+                    case TypeCode.Int32:
+                        return (T)(object)int.Parse(value);
+
+                    case TypeCode.Double:
+                        return (T)(object)double.Parse(value);
+
+                    default:
+                        return defaultValue;
+                }
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
     }
 }
