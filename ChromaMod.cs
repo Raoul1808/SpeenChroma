@@ -14,7 +14,7 @@ namespace SpeenChroma
     {
         public const string MOD_ID = "ChromaMod";
         public const string MOD_NAME = "Speen Chroma";
-        public const string MOD_VERSION = "1.0.1";
+        public const string MOD_VERSION = "1.1.0";
 
         public static string ConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Speen Mods", "SpeenChromaSettings.ini");
 
