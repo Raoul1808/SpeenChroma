@@ -3,11 +3,13 @@
  
 # Features
  - Rainbow Wheel!
- - Rainbow Speed setting file
+   - Can be toggled on/off
+   - Can be set to specific notes
+   - Variable speed
 
 # Roadmap
  - [ ] Add more settings
- - [ ] Dedicated Settings file
+ - [X] Dedicated Settings file
  - [ ] Add in-game GUI for settings
  - [ ] Charting API (2.0 release)
  
