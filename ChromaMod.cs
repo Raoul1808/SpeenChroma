@@ -39,6 +39,7 @@ namespace SpeenChroma
         private void InitializeModSettings()
         {
             Patches.RainbowSpeed = ModConfig.GetValueOrDefaultTo("Rainbow", "Speed", 1);
+            if (Patches.RainbowSpeed <= 0) Patches.RainbowSpeed = 1;
             Patches.EnabledRainbow = ModConfig.GetValueOrDefaultTo("Rainbow", "Enabled", true);
             var noteTypes = ModConfig.GetValueOrDefaultTo("Rainbow", "NoteTypes", "111111");
             Patches.EnabledBlenders = noteTypes.ToCharArray();
@@ -60,7 +61,7 @@ namespace SpeenChroma
                     "; Whether to enable the rainbow effect or not. Possible values: True / False (case sensitive!)\n" +
                     "Enabled=True\n" +
                     "\n" +
-                    "; Rainbow Speed as a multiplier. Can be a floating point number. Write with a dot (.) not a comma (,)\n" +
+                    "; Rainbow Speed as a multiplier. Can be a floating point number. Only numbers above 0. Write with a dot (.) not a comma (,)\n" +
                     "Speed=1\n" +
                     "\n" +
                     "; Notes to enable rainbow effect on. 1 to enable, 0 to disable.\n" +
