@@ -7,6 +7,9 @@
    - Can be set to specific notes
    - Variable speed
 
+# Building
+ Building instructions are on this wiki page: https://github.com/Raoul1808/SpeenChroma/wiki/Building-the-mod
+
 # Roadmap
  - [ ] Add more settings
  - [X] Dedicated Settings file
