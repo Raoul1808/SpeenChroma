@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 
@@ -9,10 +10,12 @@ namespace MewsToolbox
     {
         private Dictionary<string, Dictionary<string, string>> iniContent;
         private string FilePath;
+        public static IFormatProvider Culture;
 
         public IniFile(string filePath)
         {
             FilePath = filePath;
+            Culture = new CultureInfo("en-US");
             var fileContent = File.ReadAllLines(FilePath);
             iniContent = new Dictionary<string, Dictionary<string, string>>();
             ParseFile(fileContent);
@@ -86,8 +89,8 @@ namespace MewsToolbox
                     case TypeCode.Int32:
                         return (T)(object)int.Parse(value);
 
-                    case TypeCode.Double:
-                        return (T)(object)double.Parse(value);
+                    case TypeCode.Decimal:
+                        return (T)(object)decimal.Parse(value, Culture);
 
                     default:
                         return defaultValue;

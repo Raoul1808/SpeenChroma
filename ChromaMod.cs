@@ -1,6 +1,5 @@
 ﻿using BepInEx;
 using BepInEx.IL2CPP;
-using BepInEx.IL2CPP.UnityEngine;
 using HarmonyLib;
 using MewsToolbox;
 using System;
@@ -14,7 +13,7 @@ namespace SpeenChroma
     {
         public const string MOD_ID = "ChromaMod";
         public const string MOD_NAME = "Speen Chroma";
-        public const string MOD_VERSION = "1.1.0";
+        public const string MOD_VERSION = "1.1.1";
 
         public static string ConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Speen Mods", "SpeenChromaSettings.ini");
 
@@ -38,7 +37,7 @@ namespace SpeenChroma
 
         private void InitializeModSettings()
         {
-            Patches.RainbowSpeed = ModConfig.GetValueOrDefaultTo("Rainbow", "Speed", 1);
+            Patches.RainbowSpeed = Convert.ToSingle(ModConfig.GetValueOrDefaultTo<decimal>("Rainbow", "Speed", 1), IniFile.Culture);
             if (Patches.RainbowSpeed <= 0) Patches.RainbowSpeed = 1;
             Patches.EnabledRainbow = ModConfig.GetValueOrDefaultTo("Rainbow", "Enabled", true);
             var noteTypes = ModConfig.GetValueOrDefaultTo("Rainbow", "NoteTypes", "111111");
@@ -83,7 +82,6 @@ namespace SpeenChroma
             [HarmonyPostfix]
             private static void ApplyModificationsPostfix(GameplayColorBlender __instance)
             {
-                Logger.LogMessage("Added color blender");
                 blenders.Add(__instance);
             }
 
