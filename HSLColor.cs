@@ -13,6 +13,7 @@ namespace SpeenChroma
             get => hue;
             set
             {
+                if (value == -1f || hue == -1f) hue = -1f;
                 if (value > 1f)
                     hue = value - 1f;
                 else if (value < 0f)
@@ -27,6 +28,7 @@ namespace SpeenChroma
             get => saturation;
             set
             {
+                if (value == -1f || saturation == -1f) saturation = -1f;
                 if (value > 1f)
                     saturation = 1f;
                 else if (value < 0f)
@@ -41,6 +43,7 @@ namespace SpeenChroma
             get => luminance;
             set
             {
+                if (value == -1f || luminance == -1f) luminance = -1f;
                 if (value > 1f)
                     luminance = 1f;
                 else if (value < 0f)
