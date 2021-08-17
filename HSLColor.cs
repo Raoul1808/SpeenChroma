@@ -6,14 +6,16 @@ namespace SpeenChroma
     {
         private float hue;
         private float saturation;
-        private float luminance;
+        private float lightness;
+
+        private const float KEEP_CURRENT_VALUE_CHECK_VALUE = -2f; // TODO: Find a better name
 
         public float H
         {
             get => hue;
             set
             {
-                if (value == -1f || hue == -1f) hue = -1f;
+                if (value == KEEP_CURRENT_VALUE_CHECK_VALUE || hue == KEEP_CURRENT_VALUE_CHECK_VALUE) hue = KEEP_CURRENT_VALUE_CHECK_VALUE;
                 if (value > 1f)
                     hue = value - 1f;
                 else if (value < 0f)
@@ -28,7 +30,7 @@ namespace SpeenChroma
             get => saturation;
             set
             {
-                if (value == -1f || saturation == -1f) saturation = -1f;
+                if (value == KEEP_CURRENT_VALUE_CHECK_VALUE || saturation == KEEP_CURRENT_VALUE_CHECK_VALUE) saturation = KEEP_CURRENT_VALUE_CHECK_VALUE;
                 if (value > 1f)
                     saturation = 1f;
                 else if (value < 0f)
@@ -40,30 +42,30 @@ namespace SpeenChroma
 
         public float L
         {
-            get => luminance;
+            get => lightness;
             set
             {
-                if (value == -1f || luminance == -1f) luminance = -1f;
+                if (value == KEEP_CURRENT_VALUE_CHECK_VALUE || lightness == KEEP_CURRENT_VALUE_CHECK_VALUE) lightness = KEEP_CURRENT_VALUE_CHECK_VALUE;
                 if (value > 1f)
-                    luminance = 1f;
+                    lightness = 1f;
                 else if (value < 0f)
-                    luminance = 0f;
+                    lightness = 0f;
                 else
-                    luminance = value;
+                    lightness = value;
             }
         }
 
-        public HSLColor(float hue, float saturation, float luminance)
+        public HSLColor(float hue, float saturation, float lightness)
         {
             if (hue > 1f) hue -= 1f;
             if (hue < 0f) hue += 1f;
             if (saturation > 1f) saturation = 1f;
             if (saturation < 0f) saturation = 0f;
-            if (luminance > 1f) luminance = 1f;
-            if (luminance < 0f) luminance = 0f;
+            if (lightness > 1f) lightness = 1f;
+            if (lightness < 0f) lightness = 0f;
             this.hue = hue;
             this.saturation = saturation;
-            this.luminance = luminance;
+            this.lightness = lightness;
         }
 
         // RGB->HSL conversion formula obtained from http://www.easyrgb.com/en/math.php
