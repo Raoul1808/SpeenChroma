@@ -94,7 +94,6 @@ namespace SpeenChroma
             [HarmonyPostfix]
             private static void UpdatePostfix()
             {
-                if (Input.GetKeyDown(KeyCode.F1)) CycleChromaMode();
                 switch (ChromaMode)
                 {
                     case ChromaMode.Normal:
@@ -127,8 +126,11 @@ namespace SpeenChroma
                 }
             }
 
+            [HarmonyPatch(typeof(XDLevelSelectMenuBase), nameof(XDLevelSelectMenuBase.Update))]
+            [HarmonyPostfix]
             private static void CycleChromaMode()
             {
+                if (!Input.GetKeyDown(KeyCode.F1)) return;
                 switch (ChromaMode)
                 {
                     case ChromaMode.Normal:
