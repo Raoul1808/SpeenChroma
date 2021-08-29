@@ -5,6 +5,7 @@ using MewsToolbox;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEngine;
 
 namespace SpeenChroma
 {
@@ -13,7 +14,7 @@ namespace SpeenChroma
     {
         public const string MOD_ID = "ChromaMod";
         public const string MOD_NAME = "Speen Chroma";
-        public const string MOD_VERSION = "1.1.1";
+        public const string MOD_VERSION = "1.2.0-Crazy8s";
 
         public static string ConfigFilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Speen Mods", "SpeenChromaSettings.ini");
 
@@ -39,6 +40,7 @@ namespace SpeenChroma
         {
             Patches.RainbowSpeed = Convert.ToSingle(ModConfig.GetValueOrDefaultTo<decimal>("Rainbow", "Speed", 1), IniFile.Culture);
             if (Patches.RainbowSpeed <= 0) Patches.RainbowSpeed = 1;
+            Patches.DefaultRainbowSpeed = Patches.RainbowSpeed;
             Patches.EnabledRainbow = ModConfig.GetValueOrDefaultTo("Rainbow", "Enabled", true);
             var noteTypes = ModConfig.GetValueOrDefaultTo("Rainbow", "NoteTypes", "111111");
             Patches.EnabledBlenders = noteTypes.ToCharArray();
@@ -75,8 +77,11 @@ namespace SpeenChroma
             public static bool EnabledRainbow = true;
             public static char[] EnabledBlenders = { '1', '1', '1', '1', '1', '1'};
             public static List<GameplayColorBlender> blenders = new List<GameplayColorBlender>();
+            public static ChromaMode ChromaMode;
 
             public static float RainbowSpeed = 1f;
+            public static float DefaultRainbowSpeed = 1;
+            public static List<float[]> baseColors;
 
             [HarmonyPatch(typeof(GameplayColorBlender), nameof(GameplayColorBlender.ApplyAllModifications))]
             [HarmonyPostfix]
@@ -89,16 +94,78 @@ namespace SpeenChroma
             [HarmonyPostfix]
             private static void UpdatePostfix()
             {
-                if (!EnabledRainbow) return;
-                for (int i = 1; i < blenders.Count; i++)
+                if (Input.GetKeyDown(KeyCode.F1)) CycleChromaMode();
+                switch (ChromaMode)
                 {
-                    if (EnabledBlenders[i - 1] == '1')
-                    {
-                        var blender = blenders[i];
-                        blender.SetHSL((blender.hue >= 1f ? blender.hue - 1f : blender.hue) + 0.1f * Time.deltaTime * RainbowSpeed, blender.saturation, blender.lightness);
-                    }
+                    case ChromaMode.Normal:
+                        if (!EnabledRainbow) return;
+                        for (int i = 1; i < blenders.Count; i++)
+                        {
+                            if (EnabledBlenders[i - 1] == '1')
+                            {
+                                var blender = blenders[i];
+                                blender.SetHSL((blender.hue >= 1f ? blender.hue - 1f : blender.hue) + 0.1f * Time.deltaTime * RainbowSpeed, blender.saturation, blender.lightness);
+                            }
+                        }
+                        break;
+
+                    case ChromaMode.FullRainbow:
+                        for (int i = 1; i < blenders.Count; i++)
+                        {
+                            var blender = blenders[i];
+                            blender.SetHSL((blender.hue >= 1f ? blender.hue - 1f : blender.hue) + 0.1f * Time.deltaTime * RainbowSpeed, blender.saturation, blender.lightness);
+                        }
+                        break;
+
+                    case ChromaMode.Monochrome:
+                        for (int i = 1; i < blenders.Count; i++)
+                        {
+                            if (blenders[i].saturation > 0)
+                                blenders[i].SetHSL(blenders[i].hue, 0, blenders[i].lightness);
+                        }
+                        break;
                 }
             }
+
+            private static void CycleChromaMode()
+            {
+                switch (ChromaMode)
+                {
+                    case ChromaMode.Normal:
+                        ChromaMode = ChromaMode.FullRainbow;
+                        if (baseColors == null)
+                        {
+                            baseColors = new List<float[]>();
+                            for (int i = 1; i < blenders.Count; i++)
+                            {
+                                baseColors.Add(new float[] { blenders[i].hue, blenders[i].saturation, blenders[i].lightness });
+                            }
+                        }
+                        RainbowSpeed = 8;
+                        break;
+
+                    case ChromaMode.FullRainbow:
+                        ChromaMode = ChromaMode.Monochrome;
+                        RainbowSpeed = DefaultRainbowSpeed;
+                        break;
+
+                    case ChromaMode.Monochrome:
+                        ChromaMode = ChromaMode.Normal;
+                        for (int i = 1; i < blenders.Count; i++)
+                        {
+                            blenders[i].SetHSL(baseColors[i-1][0], baseColors[i-1][1], baseColors[i-1][2]);
+                        }
+                        break;
+                }
+                Logger.LogWarning("Chroma Mode: " + ChromaMode);
+            }
+        }
+
+        public enum ChromaMode
+        {
+            Normal,
+            Monochrome,
+            FullRainbow
         }
     }
 }
