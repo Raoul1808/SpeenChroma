@@ -67,7 +67,7 @@ namespace SpeenChroma
                     "\n" +
                     "; Notes to enable rainbow effect on. 1 to enable, 0 to disable.\n" +
                     "; Each digit represent a note type, respectively: Note A, Note B, Beat Bar, Spin Left, Spin Right, Scratch\n" +
-                    "NoteTypes=111111\n"
+                    "NoteTypes=000000\n"
                     );
             }
         }
