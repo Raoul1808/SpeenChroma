@@ -112,7 +112,7 @@ namespace SpeenChroma
                         for (int i = 1; i < blenders.Count; i++)
                         {
                             var blender = blenders[i];
-                            blender.SetHSL((blender.hue >= 1f ? blender.hue - 1f : blender.hue) + 0.1f * Time.deltaTime * RainbowSpeed, blender.saturation, blender.lightness);
+                            blender.SetHSL((blender.hue >= 1f ? blender.hue - 1f : blender.hue) + 0.1f * Time.deltaTime * RainbowSpeed, 1, 0.5f);
                         }
                         break;
 
@@ -120,7 +120,7 @@ namespace SpeenChroma
                         for (int i = 1; i < blenders.Count; i++)
                         {
                             if (blenders[i].saturation > 0)
-                                blenders[i].SetHSL(blenders[i].hue, 0, blenders[i].lightness);
+                                blenders[i].SetHSL(blenders[i].hue, 0, 0.5f);
                         }
                         break;
                 }
