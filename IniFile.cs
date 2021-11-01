@@ -59,11 +59,17 @@ namespace MewsToolbox
                 sb.AppendLine("[" + pair.Key + "]");
                 foreach (KeyValuePair<string, string> valuePair in pair.Value)
                 {
-                    sb.AppendLine(valuePair.Key + "=" + valuePair.Value);
+                    sb.AppendLine(valuePair.Key + "=" + valuePair.Value.ToString(Culture));
                 }
             }
 
             return sb.ToString();
+        }
+
+        public void AddSetting(string section, string settingName, string defaultValue)
+        {
+            if (!iniContent.ContainsKey(section)) iniContent.Add(section, new Dictionary<string, string>());
+            iniContent[section].Add(settingName, defaultValue);
         }
 
         public void SaveFile() => SaveFile(FilePath);
@@ -98,6 +104,11 @@ namespace MewsToolbox
             }
             catch
             {
+                if (!iniContent.ContainsKey(section))
+                    iniContent.Add(section, new Dictionary<string, string>());
+                if (!iniContent[section].ContainsKey(setting))
+                    iniContent[section].Add(setting, defaultValue.ToString());
+                SaveFile();
                 return defaultValue;
             }
         }
