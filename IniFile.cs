@@ -63,9 +63,9 @@ namespace MewsToolbox
 
         private string MakeString()
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
 
-            foreach (KeyValuePair<string, Dictionary<string, string>> pair in iniContent)
+            foreach (var pair in iniContent)
             {
                 sb.AppendLine("[" + pair.Key + "]");
                 foreach (KeyValuePair<string, string> valuePair in pair.Value)
@@ -97,7 +97,7 @@ namespace MewsToolbox
         /// </summary>
         public void ReloadFile()
         {
-            iniContent = new Dictionary<string, Dictionary<string, string>>();
+            iniContent.Clear();
             ParseFile(File.ReadAllLines(FilePath));
         }
 
@@ -109,6 +109,7 @@ namespace MewsToolbox
         /// <param name="setting">The config entry to get the value from</param>
         /// <param name="defaultValue">The value returned if the entry was not found or a cast isn't supported. In the first case, this value can be used to make a new config entry</param>
         /// <param name="setIfDoesntExist">If set to true, the config file will be updated with the new value. Default: true</param>
+        /// <param name="saveIfDoesntExist">If set to true, the config file with the new value will be immediately saved. Default: true</param>
         /// <returns>The setting you're looking for, or defaultValue if the value is not found</returns>
         public T GetValueOrDefaultTo<T>(string section, string setting, T defaultValue, bool setIfDoesntExist = true, bool saveIfDoesntExist = true)
         {

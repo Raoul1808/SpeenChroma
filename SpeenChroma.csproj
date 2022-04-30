@@ -43,9 +43,15 @@
     <Reference Include="BepInEx.Harmony">
       <HintPath>..\Libs\BepInEx.Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="SpinCore, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libs\SpinCore.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\Libs\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>..\Libs\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>..\Libs\UnityEngine.CoreModule.dll</HintPath>
@@ -55,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChromaUI.cs" />
     <Compile Include="ChromaPatches.cs" />
     <Compile Include="HSLColor.cs" />
     <Compile Include="IniFile.cs" />
