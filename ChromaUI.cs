@@ -7,7 +7,8 @@ namespace SpeenChroma
         public static void CreateOptionsTab(CustomSpinTab tab)
         {
             SpinUI.CreateToggle("Enable Chroma Effects", tab.UIRoot,
-                Plugin.ModConfig.GetValueOrDefaultTo("Chroma", "Enabled", true), onValueChanged: x =>
+                Plugin.ModConfig.GetValueOrDefaultTo("Chroma", "Enabled", true),
+                onValueChanged: x =>
                 {
                     Plugin.ModConfig.SetValue("Chroma", "Enabled", x);
                     ChromaPatches.ChromaUpdate = x;
@@ -15,7 +16,8 @@ namespace SpeenChroma
                 });
 
             SpinUI.CreateSlider("Rainbow Speed", tab.UIRoot, 0f, 25f,
-                Plugin.ModConfig.GetValueOrDefaultTo("Rainbow", "Speed", 1f), onValueChanged: x =>
+                Plugin.ModConfig.GetValueOrDefaultTo("Rainbow", "Speed", 1f),
+                onValueChanged: x =>
                 {
                     Plugin.ModConfig.SetValue("Rainbow", "Speed", x);
                     ChromaPatches.RainbowSpeed = x;

@@ -6,6 +6,9 @@ using System.Text;
 
 namespace MewsToolbox
 {
+    /// <summary>
+    /// Wrapper class around the .ini file format
+    /// </summary>
     public class IniFile
     {
         private Dictionary<string, Dictionary<string, string>> iniContent;
