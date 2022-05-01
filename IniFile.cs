@@ -13,7 +13,7 @@ namespace MewsToolbox
     {
         private Dictionary<string, Dictionary<string, string>> iniContent;
         private string FilePath;
-        public IFormatProvider Culture;
+        private readonly IFormatProvider _culture = new CultureInfo("en-US");
 
         public int SectionCount => iniContent.Count;
 
@@ -24,7 +24,6 @@ namespace MewsToolbox
         public IniFile(string filePath)
         {
             FilePath = filePath;
-            Culture = new CultureInfo("en-US");
             var fileContent = File.ReadAllLines(FilePath);
             iniContent = new Dictionary<string, Dictionary<string, string>>();
             ParseFile(fileContent);
@@ -73,7 +72,7 @@ namespace MewsToolbox
                 sb.AppendLine("[" + pair.Key + "]");
                 foreach (KeyValuePair<string, string> valuePair in pair.Value)
                 {
-                    sb.AppendLine(valuePair.Key + "=" + valuePair.Value.ToString(Culture));
+                    sb.AppendLine(valuePair.Key + "=" + valuePair.Value.ToString(_culture));
                 }
                 sb.AppendLine();
             }
@@ -131,13 +130,13 @@ namespace MewsToolbox
                         return (T)(object)int.Parse(value);
 
                     case TypeCode.Single:
-                        return (T)(object)float.Parse(value, Culture);
+                        return (T)(object)float.Parse(value, _culture);
 
                     case TypeCode.Double:
-                        return (T)(object)double.Parse(value, Culture);
+                        return (T)(object)double.Parse(value, _culture);
 
                     case TypeCode.Decimal:
-                        return (T)(object)decimal.Parse(value, Culture);
+                        return (T)(object)decimal.Parse(value, _culture);
 
                     default:
                         return defaultValue;

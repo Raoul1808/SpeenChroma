@@ -12,7 +12,7 @@ namespace SpeenChroma
                 {
                     Plugin.ModConfig.SetValue("Chroma", "Enabled", x);
                     ChromaPatches.ChromaUpdate = x;
-                    ChromaPatches.ResetColors();
+                    ChromaLogic.ResetCurrentColors();
                 });
 
             SpinUI.CreateSlider("Rainbow Speed", tab.UIRoot, 0f, 25f,
@@ -20,7 +20,7 @@ namespace SpeenChroma
                 onValueChanged: x =>
                 {
                     Plugin.ModConfig.SetValue("Rainbow", "Speed", x);
-                    ChromaPatches.RainbowSpeed = x;
+                    ChromaLogic.RainbowSpeed = x;
                 });
 
             // for (int i = 0; i < ChromaPatches.EnabledNotes.Count; i++)

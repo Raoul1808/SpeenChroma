@@ -28,7 +28,6 @@ namespace SpeenChroma
             
             Harmony harmony = new Harmony(PluginInfo.PLUGIN_GUID);
             harmony.PatchAll(typeof(ChromaPatches));
-            ChromaPatches.InitializeConfigFields();
             base.Awake();
         }
 

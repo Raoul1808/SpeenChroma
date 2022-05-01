@@ -46,6 +46,9 @@
     <Reference Include="SpinCore, Version=0.0.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libs\SpinCore.dll</HintPath>
     </Reference>
+    <Reference Include="SSD.Game">
+      <HintPath>..\Libs\SSD.Game.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="UnityEngine">
       <HintPath>..\Libs\UnityEngine.dll</HintPath>
@@ -61,6 +64,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChromaBlender.cs" />
+    <Compile Include="ChromaLogic.cs" />
+    <Compile Include="ChromaMode.cs" />
+    <Compile Include="ChromaTrigger.cs" />
     <Compile Include="ChromaUI.cs" />
     <Compile Include="ChromaPatches.cs" />
     <Compile Include="HSLColor.cs" />
