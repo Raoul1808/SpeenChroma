@@ -13,34 +13,74 @@ namespace SpeenChroma
 
         public static float CurrentBeat { get; private set; } = 0f;
         public static int BlenderCount => ChromaBlenders.Count;
+        
+        public static ChromaMode Mode = ChromaMode.Reactive;
 
         public static float RainbowSpeed = Plugin.ModConfig.GetValueOrDefaultTo("Rainbow", "Speed", 1f);
-        public static ChromaMode Mode = ChromaMode.Custom;
+        public static float TapReactiveStrength = Plugin.ModConfig.GetValueOrDefaultTo("Reactive", "TapStrength", 0.75f);
+        public static float MatchReactiveStrength = Plugin.ModConfig.GetValueOrDefaultTo("Reactive", "MatchStrength", 0.6f);
+        public static float BeatReactiveStrength = Plugin.ModConfig.GetValueOrDefaultTo("Reactive", "BeatStrength", 0.9f);
+        public static float SpinReactiveStrength = Plugin.ModConfig.GetValueOrDefaultTo("Reactive", "SpinStrength", 0.75f);
+        public static float ScratchReactiveStrength = Plugin.ModConfig.GetValueOrDefaultTo("Reactive", "ScratchStrength", 0.75f);
 
         public static void RegisterColorBlender(GameplayColorBlender blender) => ChromaBlenders.Add(new ChromaBlender(blender));
 
         public static void UpdateChroma()
         {
             CurrentBeat = Track.Instance.currentBeatWithOffset;
-            foreach (ChromaBlender blender in ChromaBlenders)
+            foreach (var blender in ChromaBlenders)
                 blender.UpdateColor();
         }
 
         public static void UpdateStartColors()
         {
-            foreach (ChromaBlender blender in ChromaBlenders)
+            foreach (var blender in ChromaBlenders)
                 blender.UpdateStartColor();
         }
 
         public static void ResetCurrentColors()
         {
-            foreach (ChromaBlender blender in ChromaBlenders)
+            foreach (var blender in ChromaBlenders)
                 blender.ResetCurrentColor();
         }
 
         public static void SetEnabled(int blenderIndex, bool enabled)
         {
             ChromaBlenders[blenderIndex].Enabled = enabled;
+        }
+
+        public static void PrintColors()
+        {
+            foreach (var blender in ChromaBlenders)
+                blender.PrintColor();
+        }
+
+        public static void SendReactiveTriggers(Note note)
+        {
+            float noteBeat = Track.Instance.playStateFirst?.trackData?.GetBeatAtTime(note.time) ?? 1;
+            // Plugin.LogMessage("Hit " + note.NoteType + " " + note.colorIndex + " at " + noteBeat);
+            switch (note.NoteType)
+            {
+                case NoteType.Tap:
+                case NoteType.HoldStart:
+                    ChromaBlenders[(note.colorIndex ^= 1) + 1].UpdateReactiveTrigger(TapReactiveStrength, noteBeat);
+                    break;
+                case NoteType.Match:
+                    ChromaBlenders[(note.colorIndex ^= 1) + 1].UpdateReactiveTrigger(MatchReactiveStrength, noteBeat);
+                    break;
+                case NoteType.DrumStart:
+                    ChromaBlenders[3].UpdateReactiveTrigger(BeatReactiveStrength, noteBeat);
+                    break;
+                case NoteType.SpinLeftStart:
+                    ChromaBlenders[4].UpdateReactiveTrigger(SpinReactiveStrength, noteBeat);
+                    break;
+                case NoteType.SpinRightStart:
+                    ChromaBlenders[5].UpdateReactiveTrigger(SpinReactiveStrength, noteBeat);
+                    break;
+                case NoteType.ScratchStart:
+                    ChromaBlenders[6].UpdateReactiveTrigger(ScratchReactiveStrength, noteBeat);
+                    break;
+            }
         }
 
         public static void SendTriggers(string chart)
@@ -90,6 +130,7 @@ namespace SpeenChroma
 
         private static void ParseFile(string filepath, string chart)
         {
+            // TODO: Make better parser + file format
             const int GROUP_LENGTH = 6;
             IFormatProvider culture = new CultureInfo("en-US");
             var triggers = new Dictionary<NoteColorType, List<ChromaTrigger>>();

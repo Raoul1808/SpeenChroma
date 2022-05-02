@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using HarmonyLib;
 
 namespace SpeenChroma
@@ -46,6 +44,7 @@ namespace SpeenChroma
         [HarmonyPostfix]
         private static void PauseChroma()
         {
+            // ChromaLogic.PrintColors(); // For debugging purposes
             ChromaLogic.ResetCurrentColors();
             _internalChromaUpdate = false;
             NotificationSystemGUI.AddMessage("Chroma Updates don't run while the Note Color Overrides menu is open. Remember to hit Close to resume Chroma effects!", 5f);
@@ -55,7 +54,11 @@ namespace SpeenChroma
         [HarmonyPostfix]
         private static void AddResumeChromaCallback(XDOptionsMenu __instance)
         {
-            __instance.closeColorTabButton.onClick.AddListener(ChromaLogic.UpdateStartColors);
+            __instance.closeColorTabButton.onClick.AddListener(delegate
+            {
+                ChromaLogic.UpdateStartColors();
+                _internalChromaUpdate = true;
+            });
         }
         
         [HarmonyPatch(typeof(PlayState.ScoreState), nameof(PlayState.ScoreState.AddScore))]
@@ -65,37 +68,7 @@ namespace SpeenChroma
             if (!__instance.isMaxPossibleCalculation && amount > 1)
             {
                 Note n = Track.Instance.playStateFirst.trackData.NoteData.GetNote(noteIndex);
-                // Plugin.LogMessage("Hit " + n.NoteType);
-                // switch (n.NoteType)
-                // {
-                //     case NoteType.Match:
-                //         colorBlenders[(ChromaNoteType)(n.NoteColor - 1)].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.Match]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                //
-                //     case NoteType.HoldStart:
-                //         colorBlenders[(ChromaNoteType)(n.NoteColor - 1)].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.HoldStart]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                //
-                //     case NoteType.Tap:
-                //         colorBlenders[(ChromaNoteType)(n.NoteColor - 1)].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.Tap]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                //
-                //     case NoteType.DrumEnd:
-                //         colorBlenders[ChromaNoteType.Beat].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.DrumEnd]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                //     
-                //     case NoteType.SpinLeftStart:
-                //         colorBlenders[ChromaNoteType.SpinLeft].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.SpinLeftStart]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                //
-                //     case NoteType.SpinRightStart:
-                //         colorBlenders[ChromaNoteType.SpinRight].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.SpinRightStart]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                //
-                //     case NoteType.DrumStart:
-                //         colorBlenders[ChromaNoteType.Beat].Trigger(new ChromaTrigger {Color=HSLColor.Pulse(reactiveNoteStrength[NoteType.DrumStart]), StartBeat=Chroma.CurrentBeat, Duration=1});
-                //         break;
-                // }
+                ChromaLogic.SendReactiveTriggers(n);
             }
         }
 

@@ -7,6 +7,7 @@ namespace SpeenChroma
         private GameplayColorBlender _blender;
         private HSLColor _startColor;
         private HSLColor _currentColor;
+        private ChromaTrigger _reactiveTrigger;
         private List<ChromaTrigger> _triggers = new List<ChromaTrigger>();
         private int _currentTriggerIndex = 0;
         
@@ -31,7 +32,7 @@ namespace SpeenChroma
                     UpdateRainbow(ChromaLogic.RainbowSpeed);
                     break;
                 case ChromaMode.Reactive:
-                    UpdateColorReactiveTrigger();
+                    UpdateReactive();
                     break;
                 case ChromaMode.Custom:
                     UpdateTriggers();
@@ -39,6 +40,11 @@ namespace SpeenChroma
             }
 
             _blender.SetHSL(_currentColor.H, _currentColor.S, _currentColor.L);
+        }
+
+        public void PrintColor()
+        {
+            Plugin.LogMessage($"H: {_startColor.H} S: {_startColor.S} L: {_startColor.L}");
         }
 
         private void UpdateRainbow(float rainbowSpeed)
@@ -61,7 +67,6 @@ namespace SpeenChroma
             // Check if the current trigger is obsolete
             if (currentTrigger.StartBeat + currentTrigger.Duration <= ChromaLogic.CurrentBeat)
             {
-                Plugin.LogMessage("Changing index!");
                 _currentColor = currentTrigger.Color;
                 _currentTriggerIndex++;
                 UpdateTriggers();
@@ -113,9 +118,31 @@ namespace SpeenChroma
             _triggers.Clear();
         }
 
-        private void UpdateColorReactiveTrigger()
+        public void UpdateReactive()
         {
-            throw new System.NotImplementedException();
+            if (_reactiveTrigger.StartBeat > ChromaLogic.CurrentBeat) return;
+            if (_reactiveTrigger.StartBeat + _reactiveTrigger.Duration < ChromaLogic.CurrentBeat)
+            {
+                _currentColor = _startColor;
+                return;
+            }
+
+            float progress = (ChromaLogic.CurrentBeat - _reactiveTrigger.StartBeat) / _reactiveTrigger.Duration;
+            _currentColor.L = (float) (_reactiveTrigger.Color.L + (_startColor.L - _reactiveTrigger.Color.L) * progress);
+        }
+
+        public void UpdateReactiveTrigger(float lightness, float noteBeat)
+        {
+            if (_currentColor.L > lightness) return;
+            _reactiveTrigger = new ChromaTrigger
+            {
+                Color = new HSLColor
+                {
+                    L = lightness,
+                },
+                Duration = 1,
+                StartBeat = noteBeat,
+            };
         }
 
         public void UpdateStartColor()
